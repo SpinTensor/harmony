@@ -1,3 +1,6 @@
+mod notenames;
+mod accidentals;
+
 use iced::{Element, Sandbox, Settings};
 
 struct Harmony {
