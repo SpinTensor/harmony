@@ -1,5 +1,6 @@
 mod notenames;
 mod accidentals;
+mod notes;
 
 use iced::{Element, Sandbox, Settings};
 
