@@ -71,6 +71,41 @@ impl NoteName {
             _ => self.next().up(steps-1),
         }
     }
+
+    pub fn down(&self, steps: u32) -> Self {
+        match steps {
+            0 => self.same(),
+            _ => self.prev().down(steps-1),
+        }
+    }
+
+    pub fn shift(&self, steps: i32) -> Self {
+        use std::cmp::Ordering;
+        match steps.cmp(&0) {
+            Ordering::Less => self.down(steps.abs() as u32),
+            Ordering::Equal => self.same(),
+            Ordering::Greater => self.up(steps.abs() as u32),
+        }
+    }
+
+    fn to_hsteps_idx(&self) -> i32 {
+        match self {
+            NoteName::C => 0,
+            NoteName::D => 2,
+            NoteName::E => 4,
+            NoteName::F => 5,
+            NoteName::G => 7,
+            NoteName::A => 9,
+            NoteName::B => 11,
+        }
+    }
+
+    fn dist_hsteps(&self, other: NoteName) -> i32 {
+        use std::cmp::Ordering;
+        let selfidx = self.to_hsteps_idx();
+        let otheridx = other.to_hsteps_idx();
+        otheridx - selfidx
+    }
 }
 
 #[cfg(test)]
@@ -127,5 +162,71 @@ mod tests {
         assert_eq!(NoteName::G.prev(), NoteName::F);
         assert_eq!(NoteName::A.prev(), NoteName::G);
         assert_eq!(NoteName::B.prev(), NoteName::A);
+    }
+
+    #[test]
+    fn up() {
+        assert_eq!(NoteName::C.up(0), NoteName::C);
+        assert_eq!(NoteName::C.up(1), NoteName::D);
+        assert_eq!(NoteName::C.up(2), NoteName::E);
+        assert_eq!(NoteName::C.up(3), NoteName::F);
+        assert_eq!(NoteName::C.up(4), NoteName::G);
+        assert_eq!(NoteName::C.up(5), NoteName::A);
+        assert_eq!(NoteName::C.up(6), NoteName::B);
+        assert_eq!(NoteName::C.up(7), NoteName::C);
+        assert_eq!(NoteName::C.up(8), NoteName::D);
+    }
+
+    #[test]
+    fn down() {
+        assert_eq!(NoteName::C.down(0), NoteName::C);
+        assert_eq!(NoteName::C.down(1), NoteName::B);
+        assert_eq!(NoteName::C.down(2), NoteName::A);
+        assert_eq!(NoteName::C.down(3), NoteName::G);
+        assert_eq!(NoteName::C.down(4), NoteName::F);
+        assert_eq!(NoteName::C.down(5), NoteName::E);
+        assert_eq!(NoteName::C.down(6), NoteName::D);
+        assert_eq!(NoteName::C.down(7), NoteName::C);
+        assert_eq!(NoteName::C.down(8), NoteName::B);
+    }
+
+    #[test]
+    fn shift() {
+        assert_eq!(NoteName::C.shift(-8), NoteName::B);
+        assert_eq!(NoteName::C.shift(-7), NoteName::C);
+        assert_eq!(NoteName::C.shift(-6), NoteName::D);
+        assert_eq!(NoteName::C.shift(-5), NoteName::E);
+        assert_eq!(NoteName::C.shift(-4), NoteName::F);
+        assert_eq!(NoteName::C.shift(-3), NoteName::G);
+        assert_eq!(NoteName::C.shift(-2), NoteName::A);
+        assert_eq!(NoteName::C.shift(-1), NoteName::B);
+        assert_eq!(NoteName::C.shift(0), NoteName::C);
+        assert_eq!(NoteName::C.shift(1), NoteName::D);
+        assert_eq!(NoteName::C.shift(2), NoteName::E);
+        assert_eq!(NoteName::C.shift(3), NoteName::F);
+        assert_eq!(NoteName::C.shift(4), NoteName::G);
+        assert_eq!(NoteName::C.shift(5), NoteName::A);
+        assert_eq!(NoteName::C.shift(6), NoteName::B);
+        assert_eq!(NoteName::C.shift(7), NoteName::C);
+        assert_eq!(NoteName::C.shift(8), NoteName::D);
+    }
+
+    #[test]
+    fn dist_hsteps() {
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::C), 0);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::D), 2);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::E), 4);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::F), 5);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::G), 7);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::A), 9);
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::B), 11);
+
+        assert_eq!(NoteName::C.dist_hsteps(NoteName::C), 0);
+        assert_eq!(NoteName::D.dist_hsteps(NoteName::C), -2);
+        assert_eq!(NoteName::E.dist_hsteps(NoteName::C), -4);
+        assert_eq!(NoteName::F.dist_hsteps(NoteName::C), -5);
+        assert_eq!(NoteName::G.dist_hsteps(NoteName::C), -7);
+        assert_eq!(NoteName::A.dist_hsteps(NoteName::C), -9);
+        assert_eq!(NoteName::B.dist_hsteps(NoteName::C), -11);
     }
 }
