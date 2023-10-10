@@ -29,7 +29,7 @@ impl NoteName {
         }
     }
 
-    pub fn same(&self) -> Self {
+    fn same(&self) -> Self {
         match self {
             NoteName::C => NoteName::C,
             NoteName::D => NoteName::D,
@@ -86,6 +86,25 @@ impl NoteName {
             Ordering::Equal => self.same(),
             Ordering::Greater => self.up(steps.abs() as u32),
         }
+    }
+
+    fn to_idx(&self) -> i32 {
+        match self {
+            NoteName::C => 0,
+            NoteName::D => 1,
+            NoteName::E => 2,
+            NoteName::F => 3,
+            NoteName::G => 4,
+            NoteName::A => 5,
+            NoteName::B => 6,
+        }
+    }
+
+    pub fn dist(&self, other: NoteName) -> i32 {
+        use std::cmp::Ordering;
+        let selfidx = self.to_idx();
+        let otheridx = other.to_idx();
+        otheridx - selfidx
     }
 
     fn to_hsteps_idx(&self) -> i32 {
@@ -209,6 +228,25 @@ mod tests {
         assert_eq!(NoteName::C.shift(6), NoteName::B);
         assert_eq!(NoteName::C.shift(7), NoteName::C);
         assert_eq!(NoteName::C.shift(8), NoteName::D);
+    }
+
+    #[test]
+    fn dist() {
+        assert_eq!(NoteName::C.dist(NoteName::C), 0);
+        assert_eq!(NoteName::C.dist(NoteName::D), 1);
+        assert_eq!(NoteName::C.dist(NoteName::E), 2);
+        assert_eq!(NoteName::C.dist(NoteName::F), 3);
+        assert_eq!(NoteName::C.dist(NoteName::G), 4);
+        assert_eq!(NoteName::C.dist(NoteName::A), 5);
+        assert_eq!(NoteName::C.dist(NoteName::B), 6);
+
+        assert_eq!(NoteName::C.dist(NoteName::C), 0);
+        assert_eq!(NoteName::D.dist(NoteName::C), -1);
+        assert_eq!(NoteName::E.dist(NoteName::C), -2);
+        assert_eq!(NoteName::F.dist(NoteName::C), -3);
+        assert_eq!(NoteName::G.dist(NoteName::C), -4);
+        assert_eq!(NoteName::A.dist(NoteName::C), -5);
+        assert_eq!(NoteName::B.dist(NoteName::C), -6);
     }
 
     #[test]
