@@ -133,21 +133,25 @@ mod tests {
 
     #[test]
     fn from_str() {
-        assert_eq!(NoteName::from_str(&String::from("C" )).unwrap(), NoteName::C);
-        assert_eq!(NoteName::from_str(&String::from("D" )).unwrap(), NoteName::D);
-        assert_eq!(NoteName::from_str(&String::from("E" )).unwrap(), NoteName::E);
-        assert_eq!(NoteName::from_str(&String::from("F" )).unwrap(), NoteName::F);
-        assert_eq!(NoteName::from_str(&String::from("G" )).unwrap(), NoteName::G);
-        assert_eq!(NoteName::from_str(&String::from("A" )).unwrap(), NoteName::A);
-        assert_eq!(NoteName::from_str(&String::from("B" )).unwrap(), NoteName::B);
+        assert_eq!(NoteName::from_str(&String::from("C" )), Ok(NoteName::C));
+        assert_eq!(NoteName::from_str(&String::from("D" )), Ok(NoteName::D));
+        assert_eq!(NoteName::from_str(&String::from("E" )), Ok(NoteName::E));
+        assert_eq!(NoteName::from_str(&String::from("F" )), Ok(NoteName::F));
+        assert_eq!(NoteName::from_str(&String::from("G" )), Ok(NoteName::G));
+        assert_eq!(NoteName::from_str(&String::from("A" )), Ok(NoteName::A));
+        assert_eq!(NoteName::from_str(&String::from("B" )), Ok(NoteName::B));
 
-        assert_eq!(NoteName::from_str(&String::from("c" )).unwrap(), NoteName::C);
-        assert_eq!(NoteName::from_str(&String::from("d" )).unwrap(), NoteName::D);
-        assert_eq!(NoteName::from_str(&String::from("e" )).unwrap(), NoteName::E);
-        assert_eq!(NoteName::from_str(&String::from("f" )).unwrap(), NoteName::F);
-        assert_eq!(NoteName::from_str(&String::from("g" )).unwrap(), NoteName::G);
-        assert_eq!(NoteName::from_str(&String::from("a" )).unwrap(), NoteName::A);
-        assert_eq!(NoteName::from_str(&String::from("b" )).unwrap(), NoteName::B);
+        assert_eq!(NoteName::from_str(&String::from("c" )), Ok(NoteName::C));
+        assert_eq!(NoteName::from_str(&String::from("d" )), Ok(NoteName::D));
+        assert_eq!(NoteName::from_str(&String::from("e" )), Ok(NoteName::E));
+        assert_eq!(NoteName::from_str(&String::from("f" )), Ok(NoteName::F));
+        assert_eq!(NoteName::from_str(&String::from("g" )), Ok(NoteName::G));
+        assert_eq!(NoteName::from_str(&String::from("a" )), Ok(NoteName::A));
+        assert_eq!(NoteName::from_str(&String::from("b" )), Ok(NoteName::B));
+
+        assert!(NoteName::from_str(&String::from("H")).is_err());
+        assert!(NoteName::from_str(&String::from("h")).is_err());
+        assert!(NoteName::from_str(&String::from("This should fail")).is_err());
     }
 
     #[test]
