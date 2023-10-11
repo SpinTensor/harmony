@@ -101,7 +101,6 @@ impl NoteName {
     }
 
     pub fn dist(&self, other: NoteName) -> i32 {
-        use std::cmp::Ordering;
         let selfidx = self.to_idx();
         let otheridx = other.to_idx();
         otheridx - selfidx
@@ -120,7 +119,6 @@ impl NoteName {
     }
 
     fn dist_hsteps(&self, other: NoteName) -> i32 {
-        use std::cmp::Ordering;
         let selfidx = self.to_hsteps_idx();
         let otheridx = other.to_hsteps_idx();
         otheridx - selfidx
