@@ -37,6 +37,20 @@ impl Note {
         }
         Ok(note)
     }
+
+    pub fn to_str(&self) -> String {
+        let name_str = NoteName::to_str(&self.name);
+        let accidental_str = Accidental::to_str(&self.accidental);
+        let octave_str = format!("{}", &self.octave);
+
+        let mut note_str = String::new();
+        note_str.push_str(name_str);
+        note_str.push_str(accidental_str);
+        note_str.push_str(&octave_str.as_str());
+        note_str
+    }
+
+
 }
 
 #[cfg(test)]
@@ -58,5 +72,26 @@ mod test {
         assert!(Note::from_str("#3").is_err());
         assert!(Note::from_str("3").is_err());
         assert!(Note::from_str("").is_err());
+    }
+
+    #[test]
+    fn to_str() {
+        use NoteName::*;
+        use Accidental::*;
+
+        let note = Note {name: C, accidental: Flat, octave: 0};
+        assert_eq!(note.to_str(), "Cb0");
+        let note = Note {name: D, accidental: Natural, octave: 1};
+        assert_eq!(note.to_str(), "D1");
+        let note = Note {name: E, accidental: Sharp, octave: 2};
+        assert_eq!(note.to_str(), "E#2");
+        let note = Note {name: F, accidental: Flat, octave: 3};
+        assert_eq!(note.to_str(), "Fb3");
+        let note = Note {name: G, accidental: Natural, octave: 4};
+        assert_eq!(note.to_str(), "G4");
+        let note = Note {name: A, accidental: Sharp, octave: 5};
+        assert_eq!(note.to_str(), "A#5");
+        let note = Note {name: B, accidental: Flat, octave: 6};
+        assert_eq!(note.to_str(), "Bb6");
     }
 }
