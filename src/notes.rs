@@ -82,6 +82,28 @@ impl Note {
         accidented_note.accidental = accidental;
         accidented_note
     }
+
+    pub fn next_natural(&self) -> Self {
+        let mut next_note = *self;
+        match next_note.name {
+            NoteName::B => next_note.octave += 1,
+            _ => ()
+        }
+        next_note.name = next_note.name.next();
+        next_note = next_note.rm_accidental();
+        next_note
+    }
+
+    pub fn prev_natural(&self) -> Self {
+        let mut prev_note = *self;
+        match prev_note.name {
+            NoteName::C => prev_note.octave -= 1,
+            _ => ()
+        }
+        prev_note.name = prev_note.name.prev();
+        prev_note = prev_note.rm_accidental();
+        prev_note
+    }
 }
 
 #[cfg(test)]
@@ -243,16 +265,27 @@ mod test {
         assert_eq!(natural_note.set_accidental(Accidental::Doublesharp), doublesharp_note);
     }
 
-        let doubleflat_note = Note {name: C, accidental: Doubleflat, octave: 3};
-        let flat_note = Note {name: C, accidental: Flat, octave: 3};
-        let natural_note = Note {name: C, accidental: Natural, octave: 3};
-        let sharp_note = Note {name: C, accidental: Sharp, octave: 3};
-        let doublesharp_note = Note {name: C, accidental: Doublesharp, octave: 3};
+    #[test]
+    fn next_natural() {
+        assert_eq!(Note::from_str("Cbb3").unwrap().next_natural(), Note::from_str("D3").unwrap());
+        assert_eq!(Note::from_str("Db3").unwrap().next_natural(),  Note::from_str("E3").unwrap());
+        assert_eq!(Note::from_str("E3").unwrap().next_natural(),   Note::from_str("F3").unwrap());
+        assert_eq!(Note::from_str("F#3").unwrap().next_natural(),  Note::from_str("G3").unwrap());
+        assert_eq!(Note::from_str("G##3").unwrap().next_natural(), Note::from_str("A3").unwrap());
+        assert_eq!(Note::from_str("A#3").unwrap().next_natural(),  Note::from_str("B3").unwrap());
+        assert_eq!(Note::from_str("B3").unwrap().next_natural(),   Note::from_str("C4").unwrap());
+        assert_eq!(Note::from_str("Cb4").unwrap().next_natural(),  Note::from_str("D4").unwrap());
+    }
 
-        assert_eq!(natural_note.set_accidental(Doubleflat), doubleflat_note);
-        assert_eq!(natural_note.set_accidental(Flat), flat_note);
-        assert_eq!(natural_note.set_accidental(Natural), natural_note);
-        assert_eq!(natural_note.set_accidental(Sharp), sharp_note);
-        assert_eq!(natural_note.set_accidental(Doublesharp), doublesharp_note);
+    #[test]
+    fn prev_natural() {
+        assert_eq!(Note::from_str("Cbb3").unwrap().prev_natural(), Note::from_str("B2").unwrap());
+        assert_eq!(Note::from_str("Db3").unwrap().prev_natural(),  Note::from_str("C3").unwrap());
+        assert_eq!(Note::from_str("E3").unwrap().prev_natural(),   Note::from_str("D3").unwrap());
+        assert_eq!(Note::from_str("F#3").unwrap().prev_natural(),  Note::from_str("E3").unwrap());
+        assert_eq!(Note::from_str("G##3").unwrap().prev_natural(), Note::from_str("F3").unwrap());
+        assert_eq!(Note::from_str("A#3").unwrap().prev_natural(),  Note::from_str("G3").unwrap());
+        assert_eq!(Note::from_str("B3").unwrap().prev_natural(),   Note::from_str("A3").unwrap());
+        assert_eq!(Note::from_str("Cb4").unwrap().prev_natural(),  Note::from_str("B3").unwrap());
     }
 }
