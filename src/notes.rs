@@ -1,7 +1,7 @@
 use crate::notenames::NoteName;
 use crate::accidentals::Accidental;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Note {
     name: NoteName,
     accidental: Accidental,
@@ -71,6 +71,16 @@ impl Note {
         12*(other.octave as i32 - self.octave as i32)
             + self.name.dist_hsteps(&other.name)
             + other.accidental.offset() - self.accidental.offset()
+    }
+
+    pub fn rm_accidental(&self) -> Self {
+        self.set_accidental(Accidental::Natural)
+    }
+
+    pub fn set_accidental(&self, accidental: Accidental) -> Self {
+        let mut accidented_note = *self;
+        accidented_note.accidental = accidental;
+        accidented_note
     }
 }
 
@@ -199,5 +209,41 @@ mod test {
         let note1 = Note {name: F, accidental: Sharp, octave: 3};
         let note2 = Note {name: D, accidental: Doublesharp, octave: 4};
         assert_eq!(note1.dist_hsteps(&note2), 10);
+    }
+
+    #[test]
+    fn rm_accidental() {
+        use NoteName::*;
+        use Accidental::*;
+
+        let doubleflat_note = Note {name: C, accidental: Doubleflat, octave: 3};
+        let flat_note = Note {name: C, accidental: Flat, octave: 3};
+        let natural_note = Note {name: C, accidental: Natural, octave: 3};
+        let sharp_note = Note {name: C, accidental: Sharp, octave: 3};
+        let doublesharp_note = Note {name: C, accidental: Doublesharp, octave: 3};
+
+        assert_eq!(doubleflat_note.rm_accidental(), natural_note);
+        assert_eq!(flat_note.rm_accidental(), natural_note);
+        assert_eq!(natural_note.rm_accidental(), natural_note);
+        assert_eq!(sharp_note.rm_accidental(), natural_note);
+        assert_eq!(doublesharp_note.rm_accidental(), natural_note);
+    }
+
+    #[test]
+    fn set_accidental() {
+        use NoteName::*;
+        use Accidental::*;
+
+        let doubleflat_note = Note {name: C, accidental: Doubleflat, octave: 3};
+        let flat_note = Note {name: C, accidental: Flat, octave: 3};
+        let natural_note = Note {name: C, accidental: Natural, octave: 3};
+        let sharp_note = Note {name: C, accidental: Sharp, octave: 3};
+        let doublesharp_note = Note {name: C, accidental: Doublesharp, octave: 3};
+
+        assert_eq!(natural_note.set_accidental(Doubleflat), doubleflat_note);
+        assert_eq!(natural_note.set_accidental(Flat), flat_note);
+        assert_eq!(natural_note.set_accidental(Natural), natural_note);
+        assert_eq!(natural_note.set_accidental(Sharp), sharp_note);
+        assert_eq!(natural_note.set_accidental(Doublesharp), doublesharp_note);
     }
 }

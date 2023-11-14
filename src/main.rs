@@ -1,6 +1,7 @@
 mod notenames;
 mod accidentals;
 mod notes;
+mod diatonic_scales;
 
 use iced::{Element, Sandbox, Settings};
 
