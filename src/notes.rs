@@ -67,10 +67,11 @@ impl Note {
         note_str
     }
 
-    //pub fn next(&mut self) -> Self {
-    //    let mut next_note = Note::default();
-    //    
-    //}
+    pub fn dist_hsteps(&self, other: &Note) -> i32 {
+        12*(other.octave as i32 - self.octave as i32)
+            + self.name.dist_hsteps(&other.name)
+            + other.accidental.offset() - self.accidental.offset()
+    }
 }
 
 #[cfg(test)]
@@ -117,5 +118,86 @@ mod test {
         assert_eq!(note.to_str(), "A5");
         let note = Note {name: B, accidental: Natural, octave: 6};
         assert_eq!(note.to_str(), "B6");
+    }
+
+    #[test]
+    fn dist_hsteps() {
+        use NoteName::*;
+        use Accidental::*;
+
+        // Octave differs
+        let note1 = Note {name: C, accidental: Natural, octave: 3};
+        let note2 = Note {name: C, accidental: Natural, octave: 4};
+        assert_eq!(note1.dist_hsteps(&note2), 12);
+        let note1 = Note {name: C, accidental: Natural, octave: 4};
+        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -12);
+
+        // Notevalue differs
+        let note1 = Note {name: C, accidental: Natural, octave: 3};
+        let note2 = Note {name: D, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 2);
+        let note1 = Note {name: D, accidental: Natural, octave: 3};
+        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -2);
+
+        // Notevalue and Octave differs
+        let note1 = Note {name: C, accidental: Natural, octave: 3};
+        let note2 = Note {name: D, accidental: Natural, octave: 4};
+        assert_eq!(note1.dist_hsteps(&note2), 14);
+        let note1 = Note {name: C, accidental: Natural, octave: 4};
+        let note2 = Note {name: D, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -10);
+        let note1 = Note {name: F, accidental: Natural, octave: 3};
+        let note2 = Note {name: D, accidental: Natural, octave: 4};
+        assert_eq!(note1.dist_hsteps(&note2), 9);
+
+        // Accidentals differ
+        let note1 = Note {name: C, accidental: Natural, octave: 3};
+        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 1);
+        let note1 = Note {name: C, accidental: Natural, octave: 3};
+        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -1);
+        let note1 = Note {name: C, accidental: Sharp, octave: 3};
+        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -1);
+        let note1 = Note {name: C, accidental: Flat, octave: 3};
+        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 1);
+        let note1 = Note {name: C, accidental: Flat, octave: 3};
+        let note2 = Note {name: C, accidental: Doubleflat, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -1);
+        let note1 = Note {name: C, accidental: Doubleflat, octave: 3};
+        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 1);
+        let note1 = Note {name: C, accidental: Sharp, octave: 3};
+        let note2 = Note {name: C, accidental: Doublesharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 1);
+        let note1 = Note {name: C, accidental: Doublesharp, octave: 3};
+        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -1);
+        let note1 = Note {name: C, accidental: Flat, octave: 3};
+        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 2);
+        let note1 = Note {name: C, accidental: Sharp, octave: 3};
+        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -2);
+
+        // Notevalue and Accidental differ
+        let note1 = Note {name: G, accidental: Sharp, octave: 3};
+        let note2 = Note {name: A, accidental: Natural, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), 1);
+        let note1 = Note {name: A, accidental: Natural, octave: 3};
+        let note2 = Note {name: G, accidental: Sharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -1);
+
+        // All differ
+        let note1 = Note {name: F, accidental: Doubleflat, octave: 4};
+        let note2 = Note {name: D, accidental: Sharp, octave: 3};
+        assert_eq!(note1.dist_hsteps(&note2), -12);
+        let note1 = Note {name: F, accidental: Sharp, octave: 3};
+        let note2 = Note {name: D, accidental: Doublesharp, octave: 4};
+        assert_eq!(note1.dist_hsteps(&note2), 10);
     }
 }
