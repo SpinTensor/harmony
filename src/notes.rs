@@ -5,7 +5,7 @@ use crate::accidentals::Accidental;
 pub struct Note {
     name: NoteName,
     accidental: Accidental,
-    octave: u8,
+    octave: i8,
 }
 
 impl Note {
@@ -33,7 +33,7 @@ impl Note {
         let accicental_start_idx = name_end_idx;
         let mut accicental_end_idx = accicental_start_idx;
         for c in s[accicental_end_idx..].chars() {
-            if c.is_numeric() {
+            if c.is_numeric() || c == '-' {
                 break;
             } else {
                 accicental_end_idx += 1;
@@ -48,7 +48,7 @@ impl Note {
         // octave
         let octave_start_idx = accicental_end_idx;
         let octave_end_idx = s.len();
-        match s[octave_start_idx..octave_end_idx].parse::<u8>() {
+        match s[octave_start_idx..octave_end_idx].parse::<i8>() {
             Ok(oct) => note.octave = oct,
             Err(_) => return Err("Invalid Octave")
         }
@@ -98,12 +98,17 @@ mod test {
         assert_eq!(Note::from_str("E2"), Ok(Note {name: E, accidental: Natural, octave: 2}));
         assert_eq!(Note::from_str("F#5"), Ok(Note {name: F, accidental: Sharp, octave: 5}));
         assert_eq!(Note::from_str("G##6"), Ok(Note {name: G, accidental: Doublesharp, octave: 6}));
+        assert_eq!(Note::from_str("C-2"), Ok(Note {name: C, accidental: Natural, octave: -2}));
+        assert_eq!(Note::from_str("d#-1"), Ok(Note {name: D, accidental: Sharp, octave: -1}));
+        assert_eq!(Note::from_str("Bbb-3"), Ok(Note {name: B, accidental: Doubleflat, octave: -3}));
 
         assert!(Note::from_str("C#").is_err());
         assert!(Note::from_str("Bbb").is_err());
         assert!(Note::from_str("Hb3").is_err());
         assert!(Note::from_str("B!3").is_err());
         assert!(Note::from_str("G3b").is_err());
+        assert!(Note::from_str("C-#2").is_err());
+        assert!(Note::from_str("E-").is_err());
         assert!(Note::from_str("#3").is_err());
         assert!(Note::from_str("3").is_err());
         assert!(Note::from_str("").is_err());
