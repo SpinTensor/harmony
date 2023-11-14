@@ -137,95 +137,89 @@ mod test {
 
     #[test]
     fn dist_hsteps() {
-        use NoteName::*;
-        use Accidental::*;
-
         // Octave differs
-        let note1 = Note {name: C, accidental: Natural, octave: 3};
-        let note2 = Note {name: C, accidental: Natural, octave: 4};
+        let note1 = Note::from_str("C3").unwrap();
+        let note2 = Note::from_str("C4").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 12);
-        let note1 = Note {name: C, accidental: Natural, octave: 4};
-        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("C4").unwrap();
+        let note2 = Note::from_str("C3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -12);
 
         // Notevalue differs
-        let note1 = Note {name: C, accidental: Natural, octave: 3};
-        let note2 = Note {name: D, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("C3").unwrap();
+        let note2 = Note::from_str("D3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 2);
-        let note1 = Note {name: D, accidental: Natural, octave: 3};
-        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("D3").unwrap();
+        let note2 = Note::from_str("C3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -2);
 
         // Notevalue and Octave differs
-        let note1 = Note {name: C, accidental: Natural, octave: 3};
-        let note2 = Note {name: D, accidental: Natural, octave: 4};
+        let note1 = Note::from_str("C3").unwrap();
+        let note2 = Note::from_str("D4").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 14);
-        let note1 = Note {name: C, accidental: Natural, octave: 4};
-        let note2 = Note {name: D, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("C4").unwrap();
+        let note2 = Note::from_str("D3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -10);
-        let note1 = Note {name: F, accidental: Natural, octave: 3};
-        let note2 = Note {name: D, accidental: Natural, octave: 4};
+        let note1 = Note::from_str("F3").unwrap();
+        let note2 = Note::from_str("D4").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 9);
 
         // Accidentals differ
-        let note1 = Note {name: C, accidental: Natural, octave: 3};
-        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        let note1 = Note::from_str("C3").unwrap();
+        let note2 = Note::from_str("C#3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 1);
-        let note1 = Note {name: C, accidental: Natural, octave: 3};
-        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        let note1 = Note::from_str("C3").unwrap();
+        let note2 = Note::from_str("Cb3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -1);
-        let note1 = Note {name: C, accidental: Sharp, octave: 3};
-        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("C#3").unwrap();
+        let note2 = Note::from_str("C3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -1);
-        let note1 = Note {name: C, accidental: Flat, octave: 3};
-        let note2 = Note {name: C, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("Cb3").unwrap();
+        let note2 = Note::from_str("C3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 1);
-        let note1 = Note {name: C, accidental: Flat, octave: 3};
-        let note2 = Note {name: C, accidental: Doubleflat, octave: 3};
+        let note1 = Note::from_str("Cb3").unwrap();
+        let note2 = Note::from_str("Cbb3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -1);
-        let note1 = Note {name: C, accidental: Doubleflat, octave: 3};
-        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        let note1 = Note::from_str("Cbb3").unwrap();
+        let note2 = Note::from_str("Cb3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 1);
-        let note1 = Note {name: C, accidental: Sharp, octave: 3};
-        let note2 = Note {name: C, accidental: Doublesharp, octave: 3};
+        let note1 = Note::from_str("C#3").unwrap();
+        let note2 = Note::from_str("C##3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 1);
-        let note1 = Note {name: C, accidental: Doublesharp, octave: 3};
-        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        let note1 = Note::from_str("C##3").unwrap();
+        let note2 = Note::from_str("C#3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -1);
-        let note1 = Note {name: C, accidental: Flat, octave: 3};
-        let note2 = Note {name: C, accidental: Sharp, octave: 3};
+        let note1 = Note::from_str("Cb3").unwrap();
+        let note2 = Note::from_str("C#3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 2);
-        let note1 = Note {name: C, accidental: Sharp, octave: 3};
-        let note2 = Note {name: C, accidental: Flat, octave: 3};
+        let note1 = Note::from_str("C#3").unwrap();
+        let note2 = Note::from_str("Cb3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -2);
 
         // Notevalue and Accidental differ
-        let note1 = Note {name: G, accidental: Sharp, octave: 3};
-        let note2 = Note {name: A, accidental: Natural, octave: 3};
+        let note1 = Note::from_str("G#3").unwrap();
+        let note2 = Note::from_str("A3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 1);
-        let note1 = Note {name: A, accidental: Natural, octave: 3};
-        let note2 = Note {name: G, accidental: Sharp, octave: 3};
+        let note1 = Note::from_str("A3").unwrap();
+        let note2 = Note::from_str("G#3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -1);
 
         // All differ
-        let note1 = Note {name: F, accidental: Doubleflat, octave: 4};
-        let note2 = Note {name: D, accidental: Sharp, octave: 3};
+        let note1 = Note::from_str("Fbb4").unwrap();
+        let note2 = Note::from_str("D#3").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), -12);
-        let note1 = Note {name: F, accidental: Sharp, octave: 3};
-        let note2 = Note {name: D, accidental: Doublesharp, octave: 4};
+        let note1 = Note::from_str("F#3").unwrap();
+        let note2 = Note::from_str("D##4").unwrap();
         assert_eq!(note1.dist_hsteps(&note2), 10);
     }
 
     #[test]
     fn rm_accidental() {
-        use NoteName::*;
-        use Accidental::*;
-
-        let doubleflat_note = Note {name: C, accidental: Doubleflat, octave: 3};
-        let flat_note = Note {name: C, accidental: Flat, octave: 3};
-        let natural_note = Note {name: C, accidental: Natural, octave: 3};
-        let sharp_note = Note {name: C, accidental: Sharp, octave: 3};
-        let doublesharp_note = Note {name: C, accidental: Doublesharp, octave: 3};
+        let doubleflat_note = Note::from_str("Cbb3").unwrap();
+        let flat_note = Note::from_str("Cb3").unwrap();
+        let natural_note = Note::from_str("C3").unwrap();
+        let sharp_note = Note::from_str("C#3").unwrap();
+        let doublesharp_note = Note::from_str("C##3").unwrap();
 
         assert_eq!(doubleflat_note.rm_accidental(), natural_note);
         assert_eq!(flat_note.rm_accidental(), natural_note);
@@ -236,8 +230,18 @@ mod test {
 
     #[test]
     fn set_accidental() {
-        use NoteName::*;
-        use Accidental::*;
+        let doubleflat_note = Note::from_str("Cbb3").unwrap();
+        let flat_note = Note::from_str("Cb3").unwrap();
+        let natural_note = Note::from_str("C3").unwrap();
+        let sharp_note = Note::from_str("C#3").unwrap();
+        let doublesharp_note = Note::from_str("C##3").unwrap();
+
+        assert_eq!(natural_note.set_accidental(Accidental::Doubleflat), doubleflat_note);
+        assert_eq!(natural_note.set_accidental(Accidental::Flat), flat_note);
+        assert_eq!(natural_note.set_accidental(Accidental::Natural), natural_note);
+        assert_eq!(natural_note.set_accidental(Accidental::Sharp), sharp_note);
+        assert_eq!(natural_note.set_accidental(Accidental::Doublesharp), doublesharp_note);
+    }
 
         let doubleflat_note = Note {name: C, accidental: Doubleflat, octave: 3};
         let flat_note = Note {name: C, accidental: Flat, octave: 3};
