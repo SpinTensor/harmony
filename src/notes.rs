@@ -1,7 +1,7 @@
 use crate::notenames::NoteName;
 use crate::accidentals::Accidental;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy)]
 pub struct Note {
     name: NoteName,
     accidental: Accidental,
@@ -73,15 +73,16 @@ impl Note {
             + other.accidental.offset() - self.accidental.offset()
     }
 
-    pub fn rm_accidental(&self) -> Self {
-        self.set_accidental(Accidental::Natural)
-    }
-
     pub fn set_accidental(&self, accidental: Accidental) -> Self {
         let mut accidented_note = *self;
         accidented_note.accidental = accidental;
         accidented_note
     }
+
+    pub fn rm_accidental(&self) -> Self {
+        self.set_accidental(Accidental::Natural)
+    }
+
 
     pub fn next_natural(&self) -> Self {
         let mut next_note = *self;
@@ -94,6 +95,14 @@ impl Note {
         next_note
     }
 
+    pub fn up_natural(&self, steps: u32) -> Self {
+        let mut up_note = *self;
+        for _ in 0..steps {
+            up_note = up_note.next_natural();
+        }
+        up_note
+    }
+
     pub fn prev_natural(&self) -> Self {
         let mut prev_note = *self;
         match prev_note.name {
@@ -103,6 +112,23 @@ impl Note {
         prev_note.name = prev_note.name.prev();
         prev_note = prev_note.rm_accidental();
         prev_note
+    }
+
+    pub fn down_natural(&self, steps: u32) -> Self {
+        let mut down_note = *self;
+        for _ in 0..steps {
+            down_note = down_note.prev_natural();
+        }
+        down_note
+    }
+
+    pub fn shift_natural(&self, steps: i32) -> Self {
+        use std::cmp::Ordering;
+        match steps.cmp(&0) {
+            Ordering::Less => self.down_natural(steps.abs() as u32),
+            Ordering::Equal => self.rm_accidental(),
+            Ordering::Greater => self.up_natural(steps.abs() as u32),
+        }
     }
 }
 

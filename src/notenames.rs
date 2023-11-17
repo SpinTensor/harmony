@@ -66,17 +66,19 @@ impl NoteName {
     }
 
     pub fn up(&self, steps: u32) -> Self {
-        match steps {
-            0 => self.same(),
-            _ => self.next().up(steps-1),
+        let mut up_note = *self;
+        for _ in 0..steps {
+            up_note = up_note.next();
         }
+        up_note
     }
 
     pub fn down(&self, steps: u32) -> Self {
-        match steps {
-            0 => self.same(),
-            _ => self.prev().down(steps-1),
+        let mut down_note = *self;
+        for _ in 0..steps {
+            down_note = down_note.prev();
         }
+        down_note
     }
 
     pub fn shift(&self, steps: i32) -> Self {

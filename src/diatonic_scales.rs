@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use crate::notes::Note;
+use crate::accidentals::Accidental;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum Mode {
@@ -19,9 +20,8 @@ impl Mode {
             Ordering::Equal => (),
             Ordering::Greater => return Err("Note sequence to long! Must be seven notes long!"),
         }
-        let dists: Vec<i32> = notes.windows(2).map(|x| x[0].dist_hsteps(&x[1])).collect();
-        println!("{:?}", dists);
-        match dists[..] {
+        let steps: Vec<i32> = notes.windows(2).map(|x| x[0].dist_hsteps(&x[1])).collect();
+        match steps[..] {
             [2,2,1,2,2,2] => Ok(Mode::Ionian),
             [2,1,2,2,2,1] => Ok(Mode::Dorian),
             [1,2,2,2,1,2] => Ok(Mode::Phrygian),
@@ -43,16 +43,43 @@ struct DiatonicScale {
 
 impl DiatonicScale {
     pub fn new(tonic: &Note, mode: Mode) -> DiatonicScale {
-        let mut scale = DiatonicScale {
-            tonic: *tonic,
-            mode,
-            notes: Vec::<Note>::new(),
-        };
-        scale
+        match mode {
+            Mode::Ionian => Self::new_ionian(tonic),
+            _ => panic!("ASDFSADF")
+        }
     }
 
+    fn new_ionian(tonic: &Note) -> DiatonicScale {
+        let mut scale = DiatonicScale {
+            tonic: *tonic,
+            mode: Mode::Ionian,
+            notes: Vec::<Note>::new(),
+        };
+        scale.notes.push(*tonic);
+        for inote in 1..7 {
+            scale.notes.push(tonic.shift_natural(inote));
+        }
 
-    //pub fn from_strs(note_strs: Vec<&str>) ->
+        let ionian_dists= vec![2,2,1,2,2,2];
+        for inote in 0..scale.notes.len()-1 {
+            println!("{:?}", scale.notes[inote].dist_hsteps(&scale.notes[inote+1]));
+            scale.notes[inote+1] = match scale.notes[inote].dist_hsteps(&scale.notes[inote+1])-ionian_dists[inote] {
+                -2 => scale.notes[inote+1].set_accidental(Accidental::Doublesharp),
+                -1 => scale.notes[inote+1].set_accidental(Accidental::Sharp),
+                 0 => scale.notes[inote+1].set_accidental(Accidental::Natural),
+                 1 => scale.notes[inote+1].set_accidental(Accidental::Flat),
+                 2 => scale.notes[inote+1].set_accidental(Accidental::Doubleflat),
+                _ => panic!("asdf")
+            };
+        }
+        println!("{:?}", scale.tonic);
+        println!("{:?}", scale.mode);
+        for i in &scale.notes {
+            print!(" {:?}", i.to_str());
+        }
+        println!();
+        scale
+    }
 }
 
 #[cfg(test)]
@@ -108,16 +135,28 @@ mod tests {
         assert_eq!(Mode::identify(locrian_notes), Ok(Mode::Locrian));
     }
 
-//    #[test]
-//    fn new_ionian() {
-//        assert_eq!(DiatonicScale::new(&Note::from_str("C3").unwrap(), Mode::Ionian),
-//                   DiatonicScale {Note::from_str("C3").unwrap(), Mode::Ionian, vec![Note::from_str("C3").unwrap(),
-//                        Note::from_str("D3").unwrap(),
-//                        Note::from_str("E3").unwrap(),
-//                        Note::from_str("F3").unwrap(),
-//                        Note::from_str("G3").unwrap(),
-//                        Note::from_str("A3").unwrap(),
-//                        Note::from_str("B3").unwrap()]);
-//        
-//    }
+    #[test]
+    fn new_ionian() {
+        assert_eq!(DiatonicScale::new(&Note::from_str("C3").unwrap(), Mode::Ionian),
+                   DiatonicScale {tonic: Note::from_str("C3").unwrap(),
+                                  mode: Mode::Ionian,
+                                  notes: vec![Note::from_str("C3").unwrap(),
+                                              Note::from_str("D3").unwrap(),
+                                              Note::from_str("E3").unwrap(),
+                                              Note::from_str("F3").unwrap(),
+                                              Note::from_str("G3").unwrap(),
+                                              Note::from_str("A3").unwrap(),
+                                              Note::from_str("B3").unwrap()]});
+        assert_eq!(DiatonicScale::new(&Note::from_str("G3").unwrap(), Mode::Ionian),
+                   DiatonicScale {tonic: Note::from_str("G3").unwrap(),
+                                  mode: Mode::Ionian,
+                                  notes: vec![Note::from_str("G3").unwrap(),
+                                              Note::from_str("A3").unwrap(),
+                                              Note::from_str("B3").unwrap(),
+                                              Note::from_str("C4").unwrap(),
+                                              Note::from_str("D4").unwrap(),
+                                              Note::from_str("E4").unwrap(),
+                                              Note::from_str("F#4").unwrap()]});
+
+    }
 }
