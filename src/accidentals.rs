@@ -19,7 +19,7 @@ impl Accidental {
         }
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn to_str(self) -> &'static str {
         match self {
             Accidental::Doubleflat => "bb",
             Accidental::Flat => "b",
@@ -29,7 +29,7 @@ impl Accidental {
         }
     }
 
-    pub fn offset(&self) -> i32 {
+    pub fn offset(self) -> i32 {
         match self {
             Accidental::Doubleflat => -2,
             Accidental::Flat => -1,

@@ -17,7 +17,7 @@ impl NoteName {
         }
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn to_str(self) -> &'static str {
         match self {
             NoteName::C => "C",
             NoteName::D => "D",
@@ -29,7 +29,7 @@ impl NoteName {
         }
     }
 
-    fn same(&self) -> Self {
+    fn same(self) -> Self {
         match self {
             NoteName::C => NoteName::C,
             NoteName::D => NoteName::D,
@@ -41,7 +41,7 @@ impl NoteName {
         }
     }
 
-    pub fn next(&self) -> Self {
+    pub fn next(self) -> Self {
         match self {
             NoteName::C => NoteName::D,
             NoteName::D => NoteName::E,
@@ -53,7 +53,7 @@ impl NoteName {
         }
     }
 
-    pub fn prev(&self) -> Self {
+    pub fn prev(self) -> Self {
         match self {
             NoteName::C => NoteName::B,
             NoteName::D => NoteName::C,
@@ -65,23 +65,23 @@ impl NoteName {
         }
     }
 
-    pub fn up(&self, steps: u32) -> Self {
-        let mut up_note = *self;
+    pub fn up(self, steps: u32) -> Self {
+        let mut up_note = self;
         for _ in 0..steps {
             up_note = up_note.next();
         }
         up_note
     }
 
-    pub fn down(&self, steps: u32) -> Self {
-        let mut down_note = *self;
+    pub fn down(self, steps: u32) -> Self {
+        let mut down_note = self;
         for _ in 0..steps {
             down_note = down_note.prev();
         }
         down_note
     }
 
-    pub fn shift(&self, steps: i32) -> Self {
+    pub fn shift(self, steps: i32) -> Self {
         use std::cmp::Ordering;
         match steps.cmp(&0) {
             Ordering::Less => self.down(steps.abs() as u32),
@@ -90,7 +90,7 @@ impl NoteName {
         }
     }
 
-    fn to_idx(&self) -> i32 {
+    fn to_idx(self) -> i32 {
         match self {
             NoteName::C => 0,
             NoteName::D => 1,
@@ -102,13 +102,13 @@ impl NoteName {
         }
     }
 
-    pub fn dist(&self, other: &NoteName) -> i32 {
+    pub fn dist(self, other: &NoteName) -> i32 {
         let selfidx = self.to_idx();
         let otheridx = other.to_idx();
         otheridx - selfidx
     }
 
-    fn to_hsteps_idx(&self) -> i32 {
+    fn to_hsteps_idx(self) -> i32 {
         match self {
             NoteName::C => 0,
             NoteName::D => 2,
@@ -120,7 +120,7 @@ impl NoteName {
         }
     }
 
-    pub fn dist_hsteps(&self, other: &NoteName) -> i32 {
+    pub fn dist_hsteps(self, other: &NoteName) -> i32 {
         let selfidx = self.to_hsteps_idx();
         let otheridx = other.to_hsteps_idx();
         otheridx - selfidx

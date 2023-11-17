@@ -1,7 +1,7 @@
 use crate::notenames::NoteName;
 use crate::accidentals::Accidental;
 
-#[derive(Debug, PartialEq, Copy)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Note {
     name: NoteName,
     accidental: Accidental,
@@ -55,9 +55,9 @@ impl Note {
         Ok(note)
     }
 
-    pub fn to_str(&self) -> String {
-        let name_str = NoteName::to_str(&self.name);
-        let accidental_str = Accidental::to_str(&self.accidental);
+    pub fn to_str(self) -> String {
+        let name_str = NoteName::to_str(self.name);
+        let accidental_str = Accidental::to_str(self.accidental);
         let octave_str = format!("{}", &self.octave);
 
         let mut note_str = String::new();

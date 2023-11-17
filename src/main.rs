@@ -1,9 +1,12 @@
 mod notenames;
 mod accidentals;
 mod notes;
+mod notesequences;
 mod diatonic_scales;
 
 use iced::{Element, Sandbox, Settings};
+use crate::notes::Note;
+use crate::diatonic_scales::{DiatonicScale, Mode};
 
 struct Harmony {
 }
@@ -35,4 +38,5 @@ impl Sandbox for Harmony {
 
 fn main() {
     let _ = Harmony::run(Settings::default());
+    println!("{:?}", DiatonicScale::from_tonic(Note::from_str("Gb3").unwrap(), Mode::Ionian));
 }
