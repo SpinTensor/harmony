@@ -29,18 +29,6 @@ impl NoteName {
         }
     }
 
-    fn same(self) -> Self {
-        match self {
-            NoteName::C => NoteName::C,
-            NoteName::D => NoteName::D,
-            NoteName::E => NoteName::E,
-            NoteName::F => NoteName::F,
-            NoteName::G => NoteName::G,
-            NoteName::A => NoteName::A,
-            NoteName::B => NoteName::B,
-        }
-    }
-
     pub fn next(self) -> Self {
         match self {
             NoteName::C => NoteName::D,
@@ -84,9 +72,9 @@ impl NoteName {
     pub fn shift(self, steps: i32) -> Self {
         use std::cmp::Ordering;
         match steps.cmp(&0) {
-            Ordering::Less => self.down(steps.abs() as u32),
-            Ordering::Equal => self.same(),
-            Ordering::Greater => self.up(steps.abs() as u32),
+            Ordering::Less => self.down(steps.unsigned_abs()),
+            Ordering::Equal => self,
+            Ordering::Greater => self.up(steps.unsigned_abs()),
         }
     }
 

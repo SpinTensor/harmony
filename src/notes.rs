@@ -63,7 +63,7 @@ impl Note {
         let mut note_str = String::new();
         note_str.push_str(name_str);
         note_str.push_str(accidental_str);
-        note_str.push_str(&octave_str.as_str());
+        note_str.push_str(octave_str.as_str());
         note_str
     }
 
@@ -86,9 +86,8 @@ impl Note {
 
     pub fn next_natural(&self) -> Self {
         let mut next_note = *self;
-        match next_note.name {
-            NoteName::B => next_note.octave += 1,
-            _ => ()
+        if next_note.name == NoteName::B {
+            next_note.octave += 1;
         }
         next_note.name = next_note.name.next();
         next_note = next_note.rm_accidental();
@@ -105,9 +104,8 @@ impl Note {
 
     pub fn prev_natural(&self) -> Self {
         let mut prev_note = *self;
-        match prev_note.name {
-            NoteName::C => prev_note.octave -= 1,
-            _ => ()
+        if prev_note.name == NoteName::C {
+            prev_note.octave -= 1;
         }
         prev_note.name = prev_note.name.prev();
         prev_note = prev_note.rm_accidental();
@@ -125,9 +123,9 @@ impl Note {
     pub fn shift_natural(&self, steps: i32) -> Self {
         use std::cmp::Ordering;
         match steps.cmp(&0) {
-            Ordering::Less => self.down_natural(steps.abs() as u32),
+            Ordering::Less => self.down_natural(steps.unsigned_abs()),
             Ordering::Equal => self.rm_accidental(),
-            Ordering::Greater => self.up_natural(steps.abs() as u32),
+            Ordering::Greater => self.up_natural(steps.unsigned_abs()),
         }
     }
 }

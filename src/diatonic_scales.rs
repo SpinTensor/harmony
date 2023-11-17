@@ -22,11 +22,11 @@ impl Mode {
             Ordering::Greater => return Err("Note sequence to long! Must be seven notes long!"),
         }
         let steps: Vec<i32> = noteseq.notes.windows(2).map(|x| x[0].dist_hsteps(&x[1])).collect();
-        for mode in vec![Mode::Ionian, Mode::Dorian, Mode::Phrygian, Mode::Lydian,
-                         Mode::Mixolydian, Mode::Aeolian, Mode::Locrian] {
+        for mode in [Mode::Ionian, Mode::Dorian, Mode::Phrygian, Mode::Lydian,
+                     Mode::Mixolydian, Mode::Aeolian, Mode::Locrian] {
             if steps == mode.get_dists() {return Ok(mode);}
         }
-        return Err("Unknown diatonic note sequence mode");
+        Err("Unknown diatonic note sequence mode")
     }
 
     fn get_dists(self) -> Vec<i32> {
@@ -54,8 +54,7 @@ pub struct DiatonicScale {
 impl DiatonicScale {
     pub fn from_tonic(tonic: Note, mode: Mode) -> DiatonicScale {
         let mut scale = DiatonicScale {
-            tonic: tonic,
-            mode: Mode::Ionian,
+            tonic, mode: Mode::Ionian,
             notesequence: NoteSequence::empty(),
         };
         scale.notesequence.notes.push(tonic);
@@ -131,73 +130,73 @@ mod tests {
 
     #[test]
     fn new_ionian() {
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Cb3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Cb3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Cb3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Cb3", "Db3", "Eb3", "Fb3", "Gb3", "Ab3", "Bb3"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("C3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("C3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("C3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["C3", "D3", "E3", "F3", "G3", "A3", "B3"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("C#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("C#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("C#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["C#3", "D#3", "E#3", "F#3", "G#3", "A#3", "B#3"].to_vec()).unwrap()});
 
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Db3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Db3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Db3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Db3", "Eb3", "F3", "Gb3", "Ab3", "Bb3", "C4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("D3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("D3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("D3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["D3", "E3", "F#3", "G3", "A3", "B3", "C#4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("D#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("D#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("D#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["D#3", "E#3", "F##3", "G#3", "A#3", "B#3", "C##4"].to_vec()).unwrap()});
     
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Eb3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Eb3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Eb3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Eb3", "F3", "G3", "Ab3", "Bb3", "C4", "D4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("E3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("E3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("E3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["E3", "F#3", "G#3", "A3", "B3", "C#4", "D#4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("E#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("E#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("E#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["E#3", "F##3", "G##3", "A#3", "B#3", "C##4", "D##4"].to_vec()).unwrap()});
 
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Fb3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Fb3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Fb3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Fb3", "Gb3", "Ab3", "Bbb3", "Cb4", "Db4", "Eb4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("F3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("F3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("F3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["F3", "G3", "A3", "Bb3", "C4", "D4", "E4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("F#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("F#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("F#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["F#3", "G#3", "A#3", "B3", "C#4", "D#4", "E#4"].to_vec()).unwrap()});
 
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Gb3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Gb3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Gb3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Gb3", "Ab3", "Bb3", "Cb4", "Db4", "Eb4", "F4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("G3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("G3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("G3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["G3", "A3", "B3", "C4", "D4", "E4", "F#4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("G#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("G#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("G#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["G#3", "A#3", "B#3", "C#4", "D#4", "E#4", "F##4"].to_vec()).unwrap()});
 
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Ab3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Ab3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Ab3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Ab3", "Bb3", "C4", "Db4", "Eb4", "F4", "G4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("A3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("A3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("A3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["A3", "B3", "C#4", "D4", "E4", "F#4", "G#4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("A#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("A#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("A#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["A#3", "B#3", "C##4", "D#4", "E#4", "F##4", "G##4"].to_vec()).unwrap()});
 
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("Bb3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("Bb3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("Bb3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["Bb3", "C4", "D4", "Eb4", "F4", "G4", "A4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("B3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("B3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("B3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["B3", "C#4", "D#4", "E4", "F#4", "G#4", "A#4"].to_vec()).unwrap()});
-        assert_eq!(DiatonicScale::from_tonic(&Note::from_str("B#3").unwrap(), Mode::Ionian),
+        assert_eq!(DiatonicScale::from_tonic(Note::from_str("B#3").unwrap(), Mode::Ionian),
                    DiatonicScale {tonic: Note::from_str("B#3").unwrap(), mode: Mode::Ionian,
                    notesequence: NoteSequence::from_strs(["B#3", "C##4", "D##4", "E#4", "F##4", "G##4", "A##4"].to_vec()).unwrap()});
     }

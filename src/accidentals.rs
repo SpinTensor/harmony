@@ -60,11 +60,11 @@ mod test {
 
     #[test]
     fn to_str() {
-        assert_eq!(Accidental::to_str(&Accidental::Doubleflat), "bb");
-        assert_eq!(Accidental::to_str(&Accidental::Flat), "b");
-        assert_eq!(Accidental::to_str(&Accidental::Natural), "");
-        assert_eq!(Accidental::to_str(&Accidental::Sharp), "#");
-        assert_eq!(Accidental::to_str(&Accidental::Doublesharp), "##");
+        assert_eq!(Accidental::to_str(Accidental::Doubleflat), "bb");
+        assert_eq!(Accidental::to_str(Accidental::Flat), "b");
+        assert_eq!(Accidental::to_str(Accidental::Natural), "");
+        assert_eq!(Accidental::to_str(Accidental::Sharp), "#");
+        assert_eq!(Accidental::to_str(Accidental::Doublesharp), "##");
     }
 
     #[test]
